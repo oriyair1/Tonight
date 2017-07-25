@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="10dp"
+    android:weightSum="8"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+
+
+
+<LinearLayout
+    android:orientation="vertical"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:id="@+id/recycler_place_bottom_layout"
+    android:background="@drawable/bottom_rounded_background"
+    android:gravity="center_horizontal"
+    android:layout_width="0dp"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="החסידה"
+        android:id="@+id/recycler_place_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="Ages: ~19"
+        android:textColor="@color/white"
+        android:id="@+id/recycler_place_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="Distance: 1.2 km"
+        android:textColor="@color/white"
+        android:id="@+id/recycler_place_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+
+
+    <ImageView
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/recycler_place_bottom_layout"
+        app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="fitCenter"
+        android:background="@drawable/top_rounded_frame"
+        android:padding="5dp"
+        android:id="@+id/recycler_place_img"
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
+
+
+
+
+
+
+</android.support.constraint.ConstraintLayout>
