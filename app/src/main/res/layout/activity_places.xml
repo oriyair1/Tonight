@@ -10,6 +10,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:padding="20dp"
+        android:visibility="gone"
         android:id="@+id/enable_gps_layout"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"

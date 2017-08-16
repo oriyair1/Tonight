@@ -1,27 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:padding="20dp"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/person_going_name"
-        android:textStyle="bold"
-        android:text="Ben"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:padding="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textColor="@color/white"
+            android:id="@+id/person_going_name"
+            android:textStyle="bold"
+            android:text="Ben"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/person_going_gender"
-        android:layout_marginStart="20dp"
-        android:text="Gender: male"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:textColor="@color/white"
+            android:id="@+id/person_going_gender"
+            android:layout_marginStart="20dp"
+            android:text="Gender: male"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/person_going_age"
-        android:layout_marginStart="20dp"
-        android:text="Age: 19"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:textColor="@color/white"
+            android:id="@+id/person_going_age"
+            android:layout_marginStart="20dp"
+            android:text="Age: 19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:textColor="@color/white"
+            android:id="@+id/person_going_time"
+            android:text="20:00"
+            android:gravity="end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <View
+        android:background="@color/white"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
 </LinearLayout>

@@ -17,6 +17,7 @@ public class PersonGoing {
     private String name;
     private String gender;
     private int age;
+    private long time;
 
     public void setName(String name) {
         this.name = name;
@@ -26,9 +27,22 @@ public class PersonGoing {
         this.gender = gender;
     }
 
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
     public void setAgeByBirth(long date) {
         Calendar a = Calendar.getInstance();
         Date d = new Date(date);
+
         Calendar b = Calendar.getInstance();
         b.setTime(d);
 
@@ -48,10 +62,11 @@ public class PersonGoing {
 
     }
 
-    public PersonGoing(String name, String gender, int age) {
+    public PersonGoing(String name, String gender, int age, long time) {
         this.name = name;
         this.gender = gender;
         this.age = age;
+        this.time = time;
     }
 
     public String getName() {

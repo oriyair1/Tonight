@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Or on 25/07/2017.
@@ -44,6 +45,7 @@ public class PeopleGoingAdapter extends RecyclerView.Adapter<PeopleGoingAdapter.
         TextView name;
         TextView gender;
         TextView age;
+        TextView time;
 
         public PersonViewHolder(View v) {
             super(v);
@@ -51,12 +53,24 @@ public class PeopleGoingAdapter extends RecyclerView.Adapter<PeopleGoingAdapter.
             name = (TextView)v.findViewById(R.id.person_going_name);
             gender = (TextView)v.findViewById(R.id.person_going_gender);
             age = (TextView)v.findViewById(R.id.person_going_age);
+            time = (TextView)v.findViewById(R.id.person_going_time);
         }
 
         public void setUpTexts(int position) {
             name.setText(people.get(position).getName());
             gender.setText("Gender: " + people.get(position).getGender());
             age.setText("Age: " + people.get(position).getAge());
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(people.get(position).getTime());
+            String hour;
+            String minute;
+            if(c.get(Calendar.HOUR_OF_DAY) < 10) hour = "0" + c.get(Calendar.HOUR_OF_DAY);
+            else hour = c.get(Calendar.HOUR_OF_DAY) + "";
+
+            if(c.get(Calendar.MINUTE) < 10) minute = "0" + c.get(Calendar.MINUTE);
+            else minute = c.get(Calendar.MINUTE) + "";
+            time.setText(hour + ":" + minute);
+
         }
     }
 }

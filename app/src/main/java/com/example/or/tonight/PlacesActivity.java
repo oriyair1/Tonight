@@ -24,10 +24,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -159,7 +164,84 @@ public class PlacesActivity extends AppCompatActivity implements GoogleApiClient
 
 
     public void setUpRecyclerView(){
-        DatabaseReference firebasePlaces = FirebaseDatabase.getInstance().getReference().child("Places");
+
+        final DatabaseReference firebasePlaces = FirebaseDatabase.getInstance().getReference().child("Places");
+        final DatabaseReference firebaseLogos = FirebaseDatabase.getInstance().getReference().child("Logos");
+
+        if(currentLocation == null){
+            firebaseLogos.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    ArrayList<Place> places = new ArrayList<>();
+                    for(DataSnapshot d : dataSnapshot.getChildren()) {
+
+                        places.add(new Place(d.getKey().toString()  , d.getValue().toString(), 0, 19));
+                    }
+                    adapter = new PlacesAdapter(places, PlacesActivity.this, LayoutInflater.from(PlacesActivity.this));
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(new GridLayoutManager(PlacesActivity.this, 2));
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+        else {
+            GeoFire geoFire = new GeoFire(firebasePlaces);
+            final GeoQuery query = geoFire.queryAtLocation(new GeoLocation(currentLocation.getLatitude(), currentLocation.getLongitude()), 3);
+
+            final ArrayList<Place> places = new ArrayList<>();
+
+            query.addGeoQueryEventListener(new GeoQueryEventListener() {
+                @Override
+                public void onKeyEntered(String key, final GeoLocation location) {
+                    final String k = key;
+                    final Location loc = new Location("");
+                    loc.setLatitude(location.latitude);
+                    loc.setLongitude(location.longitude);
+                    firebaseLogos.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            places.add(new Place(k, dataSnapshot.getValue().toString(), currentLocation.distanceTo(loc), 19));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onKeyExited(String key) {
+
+                }
+
+                @Override
+                public void onKeyMoved(String key, GeoLocation location) {
+
+                }
+
+                @Override
+                public void onGeoQueryReady() {
+                    adapter = new PlacesAdapter(places, PlacesActivity.this, LayoutInflater.from(PlacesActivity.this));
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(new GridLayoutManager(PlacesActivity.this, 2));
+                    query.removeAllListeners();
+                }
+
+                @Override
+                public void onGeoQueryError(DatabaseError error) {
+
+                }
+            });
+        }
+
+        /*
         firebasePlaces.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -171,6 +253,7 @@ public class PlacesActivity extends AppCompatActivity implements GoogleApiClient
                     Location dest = new Location("");
                     dest.setLatitude(Double.valueOf(d.child("Latitude").getValue().toString()));
                     dest.setLongitude(Double.valueOf(d.child("Longitude").getValue().toString()));
+
                     float distance;
                     if(currentLocation == null) distance = 0;
                     else distance = currentLocation.distanceTo(dest) / 1000;
@@ -189,34 +272,84 @@ public class PlacesActivity extends AppCompatActivity implements GoogleApiClient
 
             }
         });
+
+        */
     }
 
     public void setAdapterPlacesList() {
-        DatabaseReference firebasePlaces = FirebaseDatabase.getInstance().getReference().child("Places");
-        firebasePlaces.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                adapter.places.clear();
-                for(DataSnapshot d : dataSnapshot.getChildren()) {
+        final DatabaseReference firebasePlaces = FirebaseDatabase.getInstance().getReference().child("Places");
+        final DatabaseReference firebaseLogos = FirebaseDatabase.getInstance().getReference().child("Logos");
 
-                    Location dest = new Location("");
-                    dest.setLatitude(Double.valueOf(d.child("Latitude").getValue().toString()));
-                    dest.setLongitude(Double.valueOf(d.child("Longitude").getValue().toString()));
-                    float distance;
-                    if(currentLocation == null) distance = 0;
-                    else distance = currentLocation.distanceTo(dest) / 1000;
-                    adapter.places.add(new Place(d.getKey().toString()  , d.child("photo").getValue().toString(), distance, 19));
+        if(currentLocation == null){
+            firebaseLogos.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    ArrayList<Place> places = new ArrayList<>();
+                    for(DataSnapshot d : dataSnapshot.getChildren()) {
+
+                        places.add(new Place(d.getKey().toString()  , d.getValue().toString(), 0, 19));
+                    }
+                    adapter = new PlacesAdapter(places, PlacesActivity.this, LayoutInflater.from(PlacesActivity.this));
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(new GridLayoutManager(PlacesActivity.this, 2));
                 }
-                adapter.notifyDataSetChanged();
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
+                }
+            });
+        }
+        else {
+            GeoFire geoFire = new GeoFire(firebasePlaces);
+            final GeoQuery query = geoFire.queryAtLocation(new GeoLocation(currentLocation.getLatitude(), currentLocation.getLongitude()), 10);
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            final ArrayList<Place> places = new ArrayList<>();
+            adapter.places.clear();
+            query.addGeoQueryEventListener(new GeoQueryEventListener() {
+                @Override
+                public void onKeyEntered(String key, final GeoLocation location) {
+                    final String k = key;
+                    final Location loc = new Location("");
+                    loc.setLatitude(location.latitude);
+                    loc.setLongitude(location.longitude);
+                    firebaseLogos.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            adapter.places.add(new Place(k, dataSnapshot.getValue().toString(), currentLocation.distanceTo(loc) / 1000 , 19));
+                            adapter.notifyDataSetChanged();
+                        }
 
-            }
-        });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onKeyExited(String key) {
+
+                }
+
+                @Override
+                public void onKeyMoved(String key, GeoLocation location) {
+
+                }
+
+                @Override
+                public void onGeoQueryReady() {
+                    query.removeAllListeners();
+                }
+
+                @Override
+                public void onGeoQueryError(DatabaseError error) {
+
+                }
+            });
+        }
     }
 
     public void turnOnGPS() {
