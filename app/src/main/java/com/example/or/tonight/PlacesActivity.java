@@ -128,6 +128,7 @@ public class PlacesActivity extends AppCompatActivity implements GoogleApiClient
 
             googleClient.connect();
 
+
             currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleClient);
 
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -176,7 +177,7 @@ public class PlacesActivity extends AppCompatActivity implements GoogleApiClient
                     ArrayList<Place> places = new ArrayList<>();
                     for(DataSnapshot d : dataSnapshot.getChildren()) {
 
-                        places.add(new Place(d.getKey().toString()  , d.getValue().toString(), 0, 19));
+                        places.add(new Place(d.getKey().toString()  , d.child("p").getValue().toString(), 0, 19));
                     }
                     adapter = new PlacesAdapter(places, PlacesActivity.this, LayoutInflater.from(PlacesActivity.this));
                     recyclerView.setAdapter(adapter);
@@ -202,7 +203,7 @@ public class PlacesActivity extends AppCompatActivity implements GoogleApiClient
                     final Location loc = new Location("");
                     loc.setLatitude(location.latitude);
                     loc.setLongitude(location.longitude);
-                    firebaseLogos.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    firebaseLogos.child(key).child("p").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             places.add(new Place(k, dataSnapshot.getValue().toString(), currentLocation.distanceTo(loc), 19));
@@ -288,7 +289,7 @@ public class PlacesActivity extends AppCompatActivity implements GoogleApiClient
                     ArrayList<Place> places = new ArrayList<>();
                     for(DataSnapshot d : dataSnapshot.getChildren()) {
 
-                        places.add(new Place(d.getKey().toString()  , d.getValue().toString(), 0, 19));
+                        places.add(new Place(d.getKey().toString()  , d.child("p").getValue().toString(), 0, 19));
                     }
                     adapter = new PlacesAdapter(places, PlacesActivity.this, LayoutInflater.from(PlacesActivity.this));
                     recyclerView.setAdapter(adapter);
@@ -314,7 +315,7 @@ public class PlacesActivity extends AppCompatActivity implements GoogleApiClient
                     final Location loc = new Location("");
                     loc.setLatitude(location.latitude);
                     loc.setLongitude(location.longitude);
-                    firebaseLogos.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    firebaseLogos.child(key).child("p").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             adapter.places.add(new Place(k, dataSnapshot.getValue().toString(), currentLocation.distanceTo(loc) / 1000 , 19));

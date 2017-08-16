@@ -78,10 +78,10 @@ public class PlaceActivity extends AppCompatActivity {
 
 
 
-        FirebaseDatabase.getInstance().getReference().child("Places").child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("Logos").child(name).child("p").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String photoUrl = dataSnapshot.child("photo").getValue().toString();
+                String photoUrl = dataSnapshot.getValue().toString();
                 Picasso.with(getApplicationContext()).load(photoUrl).into(imageView);
 
             }
@@ -105,12 +105,12 @@ public class PlaceActivity extends AppCompatActivity {
     }
 
     public void checkIfDatabaseContainsPast(){
-        final DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Places").child(name);
+        final DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Logos").child(name);
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot d : dataSnapshot.getChildren()) {
-                    if(! (d.getKey().toString().equals("Location") || d.getKey().toString().equals("Latitude") || d.getKey().toString().equals("Longitude") || d.getKey().toString().equals("photo") || d.getKey().toString().equals(date.get(Calendar.DAY_OF_MONTH) + "," + (date.get(Calendar.MONTH) + 1) + "," + date.get(Calendar.YEAR))) ) {
+                    if(! (d.getKey().toString().equals("p") || d.getKey().toString().equals(date.get(Calendar.DAY_OF_MONTH) + "," + (date.get(Calendar.MONTH) + 1) + "," + date.get(Calendar.YEAR))) ) {
                         db.child(d.getKey().toString()).removeValue();
                     }
                 }
@@ -126,7 +126,7 @@ public class PlaceActivity extends AppCompatActivity {
     public void comingClick(View v){
         date = Calendar.getInstance();
         checkIfDatabaseContainsPast();
-        placeDatabase = FirebaseDatabase.getInstance().getReference().child("Places").child(name).child(date.get(Calendar.DAY_OF_MONTH) + "," + (date.get(Calendar.MONTH) + 1) + "," + date.get(Calendar.YEAR));
+        placeDatabase = FirebaseDatabase.getInstance().getReference().child("Logos").child(name).child(date.get(Calendar.DAY_OF_MONTH) + "," + (date.get(Calendar.MONTH) + 1) + "," + date.get(Calendar.YEAR));
         placeDatabase.child(preferences.getString("user", null)).setValue(System.currentTimeMillis()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -139,7 +139,7 @@ public class PlaceActivity extends AppCompatActivity {
     public void notComingClick(View v){
         date = Calendar.getInstance();
         checkIfDatabaseContainsPast();
-        placeDatabase = FirebaseDatabase.getInstance().getReference().child("Places").child(name).child(date.get(Calendar.DAY_OF_MONTH) + "," + (date.get(Calendar.MONTH) + 1) + "," + date.get(Calendar.YEAR));
+        placeDatabase = FirebaseDatabase.getInstance().getReference().child("Logos").child(name).child(date.get(Calendar.DAY_OF_MONTH) + "," + (date.get(Calendar.MONTH) + 1) + "," + date.get(Calendar.YEAR));
         placeDatabase.child(preferences.getString("user", null)).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
