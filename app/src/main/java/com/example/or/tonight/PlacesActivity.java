@@ -51,6 +51,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class PlacesActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, com.google.android.gms.location.LocationListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -64,6 +65,8 @@ public class PlacesActivity extends AppCompatActivity implements GoogleApiClient
     PlacesAdapter adapter;
     LocationManager locationManager;
     ConstraintLayout enableGpsLayout;
+    int currentSumCalc;
+    int currentSumIndex;
 
 
     @Override
@@ -78,6 +81,9 @@ public class PlacesActivity extends AppCompatActivity implements GoogleApiClient
         enableGpsLayout = (ConstraintLayout) findViewById(R.id.enable_gps_layout);
 
         setUpRecyclerView();
+
+        currentSumCalc = 0;
+        currentSumIndex = 0;
 
 
 
@@ -206,7 +212,45 @@ public class PlacesActivity extends AppCompatActivity implements GoogleApiClient
                     firebaseLogos.child(key).child("p").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            places.add(new Place(k, dataSnapshot.getValue().toString(), currentLocation.distanceTo(loc), 19));
+                            final String picUrl = dataSnapshot.getValue().toString();
+                            Calendar date = Calendar.getInstance();
+                            firebaseLogos.child(date.get(Calendar.DAY_OF_MONTH) + "," + (date.get(Calendar.MONTH) + 1) + "," + date.get(Calendar.YEAR)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    DatabaseReference firebaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
+                                    if(dataSnapshot.exists()){
+                                        currentSumCalc = 0;
+                                        currentSumIndex = 0;
+                                        final int nextIndex = places.size();
+                                        final int childrenCount = (int) dataSnapshot.getChildrenCount();
+                                        for(DataSnapshot d : dataSnapshot.getChildren()){
+                                           firebaseUsers.child(d.getKey().toString()).child("date").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    currentSumCalc += PersonGoing.getAgeByDateInMillis(Long.valueOf(dataSnapshot.getValue().toString()));
+                                                    currentSumIndex++;
+                                                    if(currentSumIndex == childrenCount){
+                                                        currentSumCalc /= childrenCount;
+                                                        if(places.size() == nextIndex + 1) places.get(nextIndex).setAges(currentSumCalc);
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        }
+                                        places.add(new Place(k, picUrl, currentLocation.distanceTo(loc), currentSumCalc));
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                         }
 
                         @Override

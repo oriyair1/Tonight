@@ -35,5 +35,7 @@ public class Place {
         return distance;
     }
 
-
+    public void setAges(int ages) {
+        this.ages = ages;
+    }
 }

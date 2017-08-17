@@ -46,14 +46,11 @@ public class PersonGoing {
         Calendar b = Calendar.getInstance();
         b.setTime(d);
 
-        Log.i("hiiiiiiiiii", "a: " + a.get(Calendar.DAY_OF_MONTH) + "," + (a.get(Calendar.MONTH) + 1) + "," + a.get(Calendar.YEAR));
-        Log.i("hiiiiiiiiii", "b: " + b.get(Calendar.DAY_OF_MONTH) + "," + (b.get(Calendar.MONTH) + 1) + "," + b.get(Calendar.YEAR));
 
         int diff = a.get(YEAR) - b.get(YEAR);
         if (b.get(MONTH) > a.get(MONTH) || (b.get(MONTH) == a.get(MONTH) && b.get(Calendar.DAY_OF_MONTH) > a.get(Calendar.DAY_OF_MONTH))) {
             diff--;
         }
-        Log.i("hiiiiiiiii", "difference: " + diff);
 
         this.age = diff;
     }
@@ -67,6 +64,22 @@ public class PersonGoing {
         this.gender = gender;
         this.age = age;
         this.time = time;
+    }
+
+    public static int getAgeByDateInMillis(long date){
+        Calendar a = Calendar.getInstance();
+        Date d = new Date(date);
+
+        Calendar b = Calendar.getInstance();
+        b.setTime(d);
+
+
+        int diff = a.get(YEAR) - b.get(YEAR);
+        if (b.get(MONTH) > a.get(MONTH) || (b.get(MONTH) == a.get(MONTH) && b.get(Calendar.DAY_OF_MONTH) > a.get(Calendar.DAY_OF_MONTH))) {
+            diff--;
+        }
+
+        return diff;
     }
 
     public String getName() {
