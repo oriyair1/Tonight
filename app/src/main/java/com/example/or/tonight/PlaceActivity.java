@@ -157,6 +157,7 @@ public class PlaceActivity extends AppCompatActivity {
                 peopleGoingSize = (int) dataSnapshot.getChildrenCount();
 
                 if(dataSnapshot.exists()) {
+
                     for (DataSnapshot d : dataSnapshot.getChildren()) {
 
                         final PersonGoing person = new PersonGoing();

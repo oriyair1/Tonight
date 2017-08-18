@@ -286,6 +286,7 @@ public class PlacesActivity extends AppCompatActivity implements GoogleApiClient
             });
         }
 
+
         /*
         firebasePlaces.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
